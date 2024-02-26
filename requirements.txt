@@ -1,4 +1,10 @@
-mouse==0.7.1
-screeninfo==0.8.1
+altgraph==0.17.4
+astroid==3.1.0
 keyboard==0.13.5
-pylint==2.16.2
+mouse==0.7.1
+packaging==23.2
+pefile==2023.2.7
+pyinstaller==6.4.0
+pyinstaller-hooks-contrib==2024.1
+pywin32-ctypes==0.2.2
+screeninfo==0.8.1
