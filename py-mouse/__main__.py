@@ -9,27 +9,26 @@ from screeninfo import get_monitors, Monitor
 
 def start(params: argparse.Namespace) -> None:
     m: Monitor = get_primary_screen()
-    pos_x: int = m.width - 50
-    pos_y: int = m.height - 50
+    loc_x: int = params.position_x
+    loc_y: int = params.position_y
+    pos_x: int = m.width - loc_x
+    pos_y: int = m.height - loc_y
 
     if params.screen is not None:
-        monitors: list[Monitor] = get_all_monitors()
-        pos_x = 0
-        for m in monitors:
-            print(f"Screen {m.name} found at {m.width}x{m.height}")
-            pos_x += m.width - 50
-        t = get_screen(params.screen)
-        pos_y = t.height - 50
+        screen: int = int(params.screen) - 1
+        t = get_screen(screen)
+        pos_x: int = (t.x + t.width) - loc_x
+        pos_y: int = t.height - loc_y
 
-        print(f"Screen {params.screen} found at {pos_x}x{pos_y}")
+        print(f"Screen {screen} found at {pos_x}x{pos_y}")
 
     if params.move:
         try:
             wait_for_key('esc')
             while True:
-                mouse.move(pos_x, pos_y, absolute=True, duration=0.2)
-                mouse.move((pos_x + 5), pos_y, absolute=True, duration=0.2)
-                mouse.move((pos_x + 5), (pos_y + 5), absolute=True, duration=0.2)
+                mouse.move(pos_x, pos_y, absolute=True, duration=0.5)
+                mouse.move((pos_x + 5), pos_y, absolute=True, duration=0.5)
+                mouse.move((pos_x + 5), (pos_y + 5), absolute=True, duration=0.5)
         except KeyboardInterrupt:
             print("Application closed")
             sys.exit(0)
@@ -52,12 +51,9 @@ def close_app(e):
     os._exit(0)
 
 
-def get_screen(name: str) -> Monitor | None:
+def get_screen(pos: int) -> Monitor | None:
     monitors: list[Monitor] = get_monitors()
-    for m in monitors:
-        if m.name.replace('\\\\.\\DISPLAY', '') == name:
-            return m
-    return None
+    return monitors[pos] if pos < len(monitors) else None
 
 
 def get_primary_screen() -> Monitor:
@@ -80,6 +76,8 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--move', help='Move mouse', action='store_true')
     parser.add_argument('-p', '--position', help='Start at position', type=int, default=50)
     parser.add_argument('-s', '--screen', help='Screen', type=str, default=None)
+    parser.add_argument('-x', '--position-x', help='Default x position location', type=int, default=50)
+    parser.add_argument('-y', '--position-y', help='Default y position location', type=int, default=50)
     args = parser.parse_args()
 
     start(args)

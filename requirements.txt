@@ -1,3 +1,4 @@
 mouse==0.7.1
 screeninfo==0.8.1
 keyboard==0.13.5
+pylint==2.16.2
